@@ -71,8 +71,6 @@
 	var/medium_burn_msg = "blistered"
 	var/heavy_burn_msg = "peeling away"
 
-	var/render_like_organic = FALSE // forces limb to render as if it were an organic limb
-
 	/// The wounds currently afflicting this body part
 	var/list/wounds
 
@@ -557,7 +555,7 @@
 		if(status == BODYPART_ORGANIC)
 			icon = base_bp_icon || DEFAULT_BODYPART_ICON_ORGANIC
 		else if(status == BODYPART_ROBOTIC)
-			icon = base_bp_icon || DEFAULT_BODYPART_ICON_ROBOTIC
+			icon = DEFAULT_BODYPART_ICON_ROBOTIC
 
 	if(owner)
 		owner.updatehealth()
@@ -674,9 +672,8 @@
 
 	if(status == BODYPART_ROBOTIC)
 		dmg_overlay_type = "robotic"
-		if(!render_like_organic)
-			body_markings = null
-			aux_marking = null
+		body_markings = null
+		aux_marking = null
 
 	if(dropping_limb)
 		no_update = TRUE //when attached, the limb won't be affected by the appearance changes of its mob owner.
@@ -742,7 +739,7 @@
 	if((body_zone != BODY_ZONE_HEAD && body_zone != BODY_ZONE_CHEST))
 		should_draw_gender = FALSE
 
-	if(is_organic_limb() || render_like_organic)
+	if(is_organic_limb())
 		limb.icon = base_bp_icon || 'icons/mob/human_parts.dmi'
 		if(should_draw_gender)
 			limb.icon_state = "[species_id]_[body_zone]_[icon_gender]"

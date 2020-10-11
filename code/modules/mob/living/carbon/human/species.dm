@@ -366,13 +366,7 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 		if(H.client && has_field_of_vision && CONFIG_GET(flag/use_field_of_vision))
 			H.LoadComponent(/datum/component/field_of_vision, H.field_of_vision_type)
 
-	C.add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/species, TRUE, multiplicative_slowdown = speedmod)
-
-	if(ROBOTIC_LIMBS in species_traits)
-		for(var/obj/item/bodypart/B in C.bodyparts)
-			B.change_bodypart_status(BODYPART_ROBOTIC, FALSE, TRUE) // Makes all Bodyparts robotic.
-			B.render_like_organic = TRUE
-
+	update_species_slowdown(C)
 	SEND_SIGNAL(C, COMSIG_SPECIES_GAIN, src, old_species)
 
 /datum/species/proc/update_species_slowdown(mob/living/carbon/human/H)
@@ -413,12 +407,6 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 		if(F)
 			qdel(F)
 
-
-	if(ROBOTIC_LIMBS in species_traits)
-		for(var/obj/item/bodypart/B in C.bodyparts)
-			B.change_bodypart_status(BODYPART_ORGANIC, FALSE, TRUE)
-			B.render_like_organic = FALSE
-
 	SEND_SIGNAL(C, COMSIG_SPECIES_LOSS, src)
 
 /datum/species/proc/handle_hair(mob/living/carbon/human/H, forced_colour)
@@ -439,7 +427,7 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 	var/dynamic_fhair_suffix = ""
 
 	//for augmented heads
-	if(HD.status == BODYPART_ROBOTIC && !HD.render_like_organic)
+	if(HD.status == BODYPART_ROBOTIC)
 		return
 
 	//we check if our hat or helmet hides our facial hair.
